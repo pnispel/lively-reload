@@ -53,6 +53,7 @@ wss.on('connection', function (ws) {
   var id = -1;
 
   ws.on('message', function(message) {
+    message = JSON.parse(JSON.stringify(message));
     var op = message.opcode;
     var payload = message.payload;
 

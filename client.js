@@ -23,10 +23,10 @@
     ws.onopen = function () {
       console.log('opened');
 
-      ws.send({
+      ws.send(JSON.stringify({
         payload: window.location.href,
         opcode: 1
-      });
+      }));
     };
 
     ws.onmessage = function (evt) {
