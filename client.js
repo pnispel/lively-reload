@@ -1,25 +1,40 @@
 (function () {
   var isNode = false;
 
-  var host = 'ws://lively-reload.herokuapp.com/'
-  var ws = new WebSocket(host);
+  var host = 'ws://lively-reload.herokuapp.com/',
+      ws;
 
-  // Export the Underscore object for **CommonJS**, with backwards-compatibility
-  // for the old `require()` API. If we're not in CommonJS, add `_` to the
-  // global object.
   if (typeof module !== 'undefined' && module.exports) {
-    module.exports = {
-      reload: function (id) {
-        ws.send({
-          payload: id,
-          opcode: 2
-        });
+    var WebSocket = require('websocket').client;
+
+    var connected = false;
+    ws = new WebSocket();
+
+    ws.connect(host);
+
+    ws.on('connect', function(connection) {
+      connected = true;
+
+      module.exports.reload = function (id) {
+        if (connected) {
+          console.log('send reload');
+          connection.send(JSON.stringify({
+            payload: id,
+            opcode: 2
+          }));
+        }
       }
+    });
+
+    module.exports = {
+      reload: new Function()
     };
 
     root.reload = module.exports.reload;
     isNode = true;
   } else {
+    ws = new WebSocket(host);
+
     ws.onopen = function () {
       console.log('opened');
 
