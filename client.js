@@ -30,8 +30,9 @@
     };
 
     ws.onmessage = function (evt) {
-      console.log(evt);
-      if (evt.data.opcode === 3) {
+      var data = JSON.parse(evt.data);
+
+      if (data.opcode === 3) {
         location.reload();
       }
     };
