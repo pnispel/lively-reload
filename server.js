@@ -1,28 +1,73 @@
-var WebSocketServer = require('ws').Server
-var http = require('http')
-var express = require('express')
-var app = express()
-var port = process.env.PORT || 5000
+// var WebSocketServer = require('ws').Server;
+// var http = require('http');
+// var express = require('express');
+// var app = express();
+// var port = process.env.PORT || 5000;
+// var clients = {};
 
-app.use(express.static(__dirname + '/'))
+// app.use(express.static(__dirname + '/'));
 
-var server = http.createServer(app)
-server.listen(port)
+// var server = http.createServer(app);
+// server.listen(port);
 
-console.log('http server listening on %d', port)
+// var wss = new WebSocketServer({server: server});
 
-var wss = new WebSocketServer({server: server})
-console.log('websocket server created')
+// wss.on('connection', function(ws) {
+//   // send client id
+//   ws.send(JSON.stringify(new Date()), function() {  })
 
-wss.on('connection', function(ws) {
-  var id = setInterval(function() {
-    ws.send(JSON.stringify(new Date()), function() {  })
-  }, 1000)
+//   ws.on('message', function (message) {
+//     var payload = message.payload;
+//     var opcode = messsage.opcode;
 
-  console.log('websocket connection open')
+//     if (opcode === 0) {
+//       clients[payload]
+//     } else if (opcode === 1) {
 
-  ws.on('close', function() {
-    console.log('websocket connection close')
-    clearInterval(id)
-  })
+//     }
+//   });
+
+//   ws.on('close', function() {
+//     clearInterval(id);
+//   });
+// });
+
+var WebSocketServer = require('ws').Server;
+var http = require('http');
+var express = require('express');
+var app = express();
+var port = process.env.PORT || 5000;
+var url = require('url');
+
+var server = http.createServer(app);
+server.listen(port);
+
+var wss = new WebSocketServer({server: server});
+var clients = {}; // userID: webSocket
+
+// CONNECT /:userID
+// wscat -c ws://localhost:5000/1
+wss.on('connection', function (ws) {
+  var id = -1;
+
+  ws.on('message', function(message) {
+    console.log(message);
+
+    var op = message.opcode;
+    var payload = message.payload;
+
+    if (op === 1) {
+      id = payload;
+      clients[payload] = ws;
+    } else if (op === 2) {
+      clients[payload].send({
+        opcode: 3
+      });
+    }
+  });
+
+  ws.on('close', function () {
+    delete clients[id];
+    console.log('deleted: ' + id);
+  });
 })
