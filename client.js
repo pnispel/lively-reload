@@ -9,8 +9,9 @@
   // global object.
   if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
-      reload: function () {
+      reload: function (id) {
         ws.send({
+          payload: id,
           opcode: 2
         });
       }
@@ -19,10 +20,12 @@
     root.reload = module.exports.reload;
     isNode = true;
   } else {
-    ws.send({
-      payload: window.location.href,
-      opcode: 1
-    });
+    ws.onopen = function () {
+      ws.send({
+        payload: window.location.href,
+        opcode: 1
+      });
+    };
 
     ws.onmessage = function (evt) {
       if (evt.data.opcode === 3) {
