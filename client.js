@@ -28,6 +28,7 @@
     };
 
     ws.onmessage = function (evt) {
+      console.log(evt);
       if (evt.data.opcode === 3) {
         location.reload();
       }
