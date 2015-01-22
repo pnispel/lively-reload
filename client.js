@@ -21,6 +21,8 @@
     isNode = true;
   } else {
     ws.onopen = function () {
+      console.log('opened');
+
       ws.send({
         payload: window.location.href,
         opcode: 1
