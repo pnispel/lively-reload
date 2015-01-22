@@ -56,7 +56,10 @@ wss.on('connection', function (ws) {
     var op = message.opcode;
     var payload = message.payload;
 
+    console.log('recieved message. op: ' + opcode + ' payload: ' + payload);
+
     if (op === 1) {
+      console.log('client connected from ' + payload);
       id = payload;
       clients[payload] = ws;
     } else if (op === 2) {
