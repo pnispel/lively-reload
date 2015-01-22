@@ -53,8 +53,6 @@ wss.on('connection', function (ws) {
   var id = -1;
 
   ws.on('message', function(message) {
-    console.log(message);
-
     var op = message.opcode;
     var payload = message.payload;
 
@@ -62,6 +60,7 @@ wss.on('connection', function (ws) {
       id = payload;
       clients[payload] = ws;
     } else if (op === 2) {
+      console.log('sending reload to ' + payload);
       clients[payload].send({
         opcode: 3
       });
