@@ -53,11 +53,11 @@ wss.on('connection', function (ws) {
   var id = -1;
 
   ws.on('message', function(message) {
-    var m = JSON.parse(JSON.stringify(message));
+    var m = JSON.parse(message);
     var op = m.opcode;
     var payload = m.payload;
 
-    console.log('recieved message ' + typeof(m) + ' ' + typeof(message) + ' ' + message.payload + ' . op: ' + op + ' payload: ' + payload);
+    console.log('recieved message ' + typeof(m) + ' ' + typeof(message) + ' ' + m.payload + ' . op: ' + op + ' payload: ' + payload);
 
     if (op === 1) {
       console.log('client connected from ' + payload);
