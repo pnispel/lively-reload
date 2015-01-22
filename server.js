@@ -65,9 +65,9 @@ wss.on('connection', function (ws) {
       clients[payload] = ws;
     } else if (op === 2) {
       console.log('sending reload to ' + payload);
-      clients[payload].send({
+      clients[payload].send(JSON.stringify({
         opcode: 3
-      });
+      }));
     }
   });
 
