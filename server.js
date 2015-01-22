@@ -39,6 +39,8 @@ var app = express();
 var port = process.env.PORT || 5000;
 var url = require('url');
 
+app.use(express.static(__dirname + '/'));
+
 var server = http.createServer(app);
 server.listen(port);
 
